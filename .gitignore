@@ -1,0 +1,18 @@
+# Environment / secrets
+.env
+
+# Python cache / virtual envs
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime data
+logs/
+
+# Vendored dependency (keep lightweight; install via requirements.txt)
+instagrapi/
+
+# Don't commit nested git metadata (if any)
+.git/
+
