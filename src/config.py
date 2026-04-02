@@ -18,8 +18,8 @@ class Settings:
 
 def get_settings() -> Settings:
     return Settings(
-        access_token=os.getenv("INSTAGRAM_ACCESS_TOKEN", ""),
-        business_account_id=os.getenv("INSTAGRAM_BUSINESS_ACCOUNT_ID", ""),
+        access_token=(os.getenv("INSTAGRAM_ACCESS_TOKEN", "") or "").strip(),
+        business_account_id=(os.getenv("INSTAGRAM_BUSINESS_ACCOUNT_ID", "") or "").strip(),
         min_hour=int(os.getenv("SCHEDULER_MIN_HOUR", "9")),
         max_hour=int(os.getenv("SCHEDULER_MAX_HOUR", "21")),
     )
