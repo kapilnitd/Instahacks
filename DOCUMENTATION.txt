@@ -1,0 +1,82 @@
+insta_hacks Documentation
+========================
+
+Overview
+--------
+insta_hacks is a conservative starter project for Instagram-related tooling.
+It focuses on:
+1) reading configuration from a .env file
+2) scheduling reminder windows so you can review content manually
+3) providing a simple helper for official Instagram/Meta Graph API requests
+
+It does NOT aim to automate engagement (likes/comments/follows) or bypass platform controls.
+
+Main entry point
+-----------------
+src/main.py calls start_scheduler() from src/scheduler.py.
+
+Configuration (src/config.py)
+------------------------------
+Uses python-dotenv to load environment variables, then returns a Settings dataclass:
+- INSTAGRAM_ACCESS_TOKEN (string)
+- INSTAGRAM_BUSINESS_ACCOUNT_ID (string)
+- SCHEDULER_MIN_HOUR (int, default 9)
+- SCHEDULER_MAX_HOUR (int, default 21)
+
+Scheduler behavior (src/scheduler.py)
+--------------------------------------
+Uses APScheduler BlockingScheduler.
+Creates jobs that only print reminders.
+
+Rules:
+1) Hours: min_hour..max_hour inclusive
+2) For each hour: schedule with probability random.random() < 0.45
+3) Minute: random integer from 0..59 for scheduled hours
+4) Adds a cron job for _manual_action_prompt(hour, minute)
+
+Reminder message:
+Prints a timestamp and tells you to review content manually.
+No automated engagement actions are performed by the scheduler.
+
+Graph API wrapper (src/instagram_client.py)
+--------------------------------------------
+Provides InstagramGraphClient that can query Graph API endpoints using your access token.
+Currently includes get_account_overview() as an example.
+This wrapper is not wired into the scheduler loop; call it from your own code.
+
+Example script: follower.py
+-----------------------------
+follower.py is an additional example using the instagrapi library.
+It is NOT invoked by src/main.py.
+It contains placeholders for username/password and includes functions for engagement-like actions.
+Treat it as example-only.
+
+Setup & run
+------------
+1) Copy .env.example to .env and fill in values
+2) Install dependencies:
+   pip install -r requirements.txt
+3) Run from the insta_hacks directory:
+   python -m src.main
+
+Expected output:
+- Scheduler started. Press Ctrl+C to stop.
+- Reminder window: <min_hour>:00 to <max_hour>:59
+
+Local-only/excluded content
+-----------------------------
+.gitignore excludes:
+- .env
+- logs/
+- instagrapi/ (vendored dependencies)
+
+Troubleshooting
+----------------
+1) If python -m src.main fails:
+   - run from the insta_hacks directory (parent of src/)
+   - alternatively try python src/main.py and adjust PYTHONPATH
+
+2) If Graph API calls fail:
+   - verify token validity and required permissions/scopes
+   - confirm INSTAGRAM_BUSINESS_ACCOUNT_ID
+
