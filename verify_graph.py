@@ -15,7 +15,7 @@ import sys
 import requests
 
 from src.config import get_settings
-from src.instagram_client import InstagramGraphClient
+from src.instagram_client import InstagramGraphClient, instagram_graph_base_url
 
 
 def main() -> int:
@@ -43,6 +43,7 @@ def main() -> int:
         print(f"Meta says: {msg}")
         return 2
     print("OK: Graph API connection successful.")
+    print(f"  api_base: {instagram_graph_base_url()}")
     print(f"  id: {data.get('id')}")
     print(f"  username: {data.get('username')}")
     print(f"  followers_count: {data.get('followers_count')}")
